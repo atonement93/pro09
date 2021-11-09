@@ -1,26 +1,26 @@
-package sec01.ex02;
+package sec03.ex04;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.URLEncoder;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
- * Servlet implementation class LoginServlet
+ * Servlet implementation class SessionTest4
  */
-//@WebServlet("/login")
-public class LoginServlet extends HttpServlet {
+@WebServlet("/login")
+public class SessionTest4 extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public LoginServlet() {
+    public SessionTest4() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -40,29 +40,26 @@ public class LoginServlet extends HttpServlet {
 		request.setCharacterEncoding("utf-8");
 		response.setContentType("text/html;charset=utf-8");
 		PrintWriter out = response.getWriter();
+		HttpSession session = request.getSession();
 		String user_id = request.getParameter("user_id");
 		String user_pw = request.getParameter("user_pw");
-		String user_address = request.getParameter("user_address");
-		String user_email = request.getParameter("user_email");
-		String user_hp = request.getParameter("user_hp");
-		
-		String data="안녕하세요!<br>로그인되었습니다.<br><br>";
-		data+="<html><body>";
-		data+="아이디 : "+user_id;
-		data+="<br>";
-		data+="패스워드 : "+user_pw;
-		data+="<br>";
-		data+="주소 : "+user_address;
-		data+="<br>";
-		data+="이메일 : "+user_email;
-		data+="<br>";
-		data+="휴대전화 : "+user_hp;
-		
-		out.print(data);
-		
-		user_address=URLEncoder.encode(user_address,"utf-8");
-		out.print("<a href='/pro09/second?user_id="+user_id+"&user_pw="+user_pw+"&user_address="+user_address+"'><br>두번째 서블릿으로 보내기</a>");
-		data+="</body></html>";
+		if(session.isNew()) {
+			if(user_id != null) {
+				session.setAttribute("user_id", user_id);
+				out.println("<a href='login'>로그인이 되었음</a>");
+			}else {
+				out.print("<a href='login2.html'>로그인 다시하세요~</a>");
+				session.invalidate();
+			}
+		}else {
+			user_id=(String) session.getAttribute("user_id");
+			if(user_id !=null && user_id.length() !=0) {
+				out.print("안녕하세요 "+user_id+"님! ^^");
+			}else {
+				out.print("<a href='login2.html'>로그인 다시하세요~</a>");
+				session.invalidate();
+			}
+		}
 	}
 
 }
