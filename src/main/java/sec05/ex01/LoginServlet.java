@@ -1,7 +1,8 @@
-package sec03.ex04;
+package sec05.ex01;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URLEncoder;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,16 +12,16 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
- * Servlet implementation class SessionTest4
+ * Servlet implementation class LoginServlet
  */
-//@WebServlet("/login")
-public class SessionTest4 extends HttpServlet {
+@WebServlet("/login")
+public class LoginServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public SessionTest4() {
+    public LoginServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -40,25 +41,29 @@ public class SessionTest4 extends HttpServlet {
 		request.setCharacterEncoding("utf-8");
 		response.setContentType("text/html;charset=utf-8");
 		PrintWriter out = response.getWriter();
-		HttpSession session = request.getSession();
 		String user_id = request.getParameter("user_id");
 		String user_pw = request.getParameter("user_pw");
-		if(session.isNew()) {
-			if(user_id != null) {
-				session.setAttribute("user_id", user_id);
-				out.println("<a href='login'>로그인이 되었음</a>");
-			}else {
-				out.print("<a href='login2.html'>로그인 다시하세요~</a>");
-				session.invalidate();
-			}
+		
+		MemberVO memberVO = new MemberVO();
+		memberVO.setId(user_id);
+		memberVO.setPw(user_pw);
+		MemberDAO dao = new MemberDAO();
+		boolean result = dao.isExisted(memberVO);
+		
+		if(result) {
+			HttpSession session = request.getSession();
+			session.setAttribute("isLogon", true);
+			session.setAttribute("login.id", user_id);
+			session.setAttribute("login.pw", user_pw);
+			
+			out.print("<html><body>");
+			out.print("안녕하세요! "+user_id+"님 ^^<br>");
+			out.print("<a href='show'>회원정보 확인하기</a>");
+			out.print("</body></html>");
 		}else {
-			user_id=(String) session.getAttribute("user_id");
-			if(user_id !=null && user_id.length() !=0) {
-				out.print("안녕하세요 "+user_id+"님! ^^");
-			}else {
-				out.print("<a href='login2.html'>로그인 다시하세요~</a>");
-				session.invalidate();
-			}
+			out.print("<html><body><center>회원 정보가 맞지 않습니다.");
+			out.print("<a href='login3.html'>다시 로그인하기</a>");
+			out.print("</body></html>");
 		}
 	}
 
