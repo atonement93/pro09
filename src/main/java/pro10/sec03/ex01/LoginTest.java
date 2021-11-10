@@ -1,34 +1,53 @@
-package sec05.ex01;
+package pro10.sec03.ex01;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.URLEncoder;
 
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 /**
- * Servlet implementation class LoginServlet
+ * Servlet implementation class LoginTest
  */
-//@WebServlet("/login")
-public class LoginServlet extends HttpServlet {
+@WebServlet("/login")
+public class LoginTest extends HttpServlet implements Filter {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public LoginServlet() {
+    public LoginTest() {
         super();
         // TODO Auto-generated constructor stub
     }
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+     * @see Filter#init(FilterConfig)
+     */
+    public void init(FilterConfig filterConfig) throws javax.servlet.ServletException { 
+         // TODO Auto-generated method stub
+    }
+
+	/**
+     * @see Filter#doFilter(ServletRequest, ServletResponse, FilterChain)
+     */
+    public void doFilter(ServletRequest arg0, ServletResponse arg1, FilterChain arg2) throws java.io.IOException, javax.servlet.ServletException { 
+         // TODO Auto-generated method stub
+    }
+
+	/**
+	 * @see Servlet#init(ServletConfig)
 	 */
+
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		response.getWriter().append("Served at: ").append(request.getContextPath());
@@ -38,33 +57,15 @@ public class LoginServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.setCharacterEncoding("utf-8");
+		//request.setCharacterEncoding("utf-8");
 		response.setContentType("text/html;charset=utf-8");
 		PrintWriter out = response.getWriter();
 		String user_id = request.getParameter("user_id");
 		String user_pw = request.getParameter("user_pw");
-		
-		MemberVO memberVO = new MemberVO();
-		memberVO.setId(user_id);
-		memberVO.setPw(user_pw);
-		MemberDAO dao = new MemberDAO();
-		boolean result = dao.isExisted(memberVO);
-		
-		if(result) {
-			HttpSession session = request.getSession();
-			session.setAttribute("isLogon", true);
-			session.setAttribute("login.id", user_id);
-			session.setAttribute("login.pw", user_pw);
-			
-			out.print("<html><body>");
-			out.print("안녕하세요! "+user_id+"님 ^^<br>");
-			out.print("<a href='show'>회원정보 확인하기</a>");
-			out.print("</body></html>");
-		}else {
-			out.print("<html><body><center>회원 정보가 맞지 않습니다.");
-			out.print("<a href='login3.html'>다시 로그인하기</a>");
-			out.print("</body></html>");
-		}
+		out.println("<html><body>");
+		out.println("아이디 : "+user_id+"<br>");
+		out.println("비밀번호 : "+user_pw);
+		out.println("</body></html>");
 	}
 
 }
