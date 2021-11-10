@@ -1,27 +1,27 @@
-package sec02.ex01;
+package pro10.sec01.ex01;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.URLDecoder;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
- * Servlet implementation class GetCookieValue
+ * Servlet implementation class GetAttribute
  */
-//@WebServlet("/get")
-public class GetCookieValue extends HttpServlet {
+@WebServlet("/get")
+public class GetAttribute extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public GetCookieValue() {
+    public GetAttribute() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -32,12 +32,16 @@ public class GetCookieValue extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html;charset=utf-8");
 		PrintWriter out = response.getWriter();
-		Cookie[] allValues=request.getCookies();
-		for(int i=0;i<allValues.length;i++) {
-			if(allValues[i].getName().equals("cookieTest")) {
-				out.println("<h2>Cookie 값 가져오기 : "+URLDecoder.decode(allValues[i].getValue(),"utf-8"));
-			}
-		}
+		ServletContext ctx = getServletContext();
+		HttpSession session = request.getSession();
+		
+		String ctxMe = (String)ctx.getAttribute("context");
+		String sesMe = (String)session.getAttribute("session");
+		String reqMe = (String)request.getAttribute("request");
+		
+		out.print("context값 : " + ctxMe + "<br>");
+		out.print("session값 : " + sesMe + "<br>");
+		out.print("request값 : " + reqMe + "<br>");
 	}
 
 	/**
